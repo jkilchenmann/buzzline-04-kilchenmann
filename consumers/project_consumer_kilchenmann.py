@@ -41,6 +41,34 @@ DATA_FOLDER = PROJECT_ROOT.joinpath("data")
 DATA_FILE = DATA_FOLDER.joinpath("project_live.json")
 
 #####################################
+# Set up live visualization
+#####################################
+
+plt.ion()  # Turn on interactive mode
+fig, ax = plt.subplots()
+message_lengths = []
+
+def update_chart():
+    """
+    Update the live bar chart for message length frequency.
+    """
+    ax.clear()
+    if not message_lengths:
+        return
+    
+    length_counts = Counter(message_lengths)
+    lengths, counts = zip(*sorted(length_counts.items()))
+    
+    ax.bar(lengths, counts, color='blue')
+    ax.set_xlabel("Message Length")
+    ax.set_ylabel("Frequency")
+    ax.set_title("Live Distribution of Message Lengths")
+    ax.set_xticks(lengths)
+    
+    plt.draw()
+    plt.pause(0.1)  # Allow time for the chart to render
+
+#####################################
 # Define Message Consumer
 #####################################
 
@@ -50,7 +78,6 @@ def consume_from_kafka():
     """
     topic = get_kafka_topic()
     kafka_server = get_kafka_server()
-    message_lengths = []
     
     try:
         consumer = KafkaConsumer(
@@ -62,12 +89,9 @@ def consume_from_kafka():
         
         for message in consumer:
             logger.info(f"Received from Kafka: {message.value}")
-            process_message(message.value, message_lengths)
+            process_message(message.value)
     except Exception as e:
         logger.error(f"Kafka consumer error: {e}")
-    finally:
-        plot_message_length_distribution(message_lengths)
-
 
 def consume_from_file():
     """
@@ -78,51 +102,24 @@ def consume_from_file():
         return
     
     logger.info(f"Reading messages from {DATA_FILE}")
-    message_lengths = []
     try:
         with DATA_FILE.open("r") as f:
             for line in f:
                 message = json.loads(line.strip())
                 logger.info(f"Read from file: {message}")
-                process_message(message, message_lengths)
+                process_message(message)
                 time.sleep(1)  # Simulate processing delay
     except Exception as e:
         logger.error(f"Error reading from file: {e}")
-    finally:
-        plot_message_length_distribution(message_lengths)
 
-
-def process_message(message: dict, message_lengths: list):
+def process_message(message: dict):
     """
-    Process the incoming message and track message lengths.
+    Process the incoming message and update the chart.
     """
     logger.info(f"Processing message: {message}")
     message_length = message.get("message_length", 0)
     message_lengths.append(message_length)
-    logger.info(f"Message lengths collected: {message_lengths}")
-
-
-def plot_message_length_distribution(message_lengths):
-    """
-    Generate a bar chart for message length frequency.
-    """
-    if not message_lengths:
-        logger.info("No message lengths to plot.")
-        return
-    
-    length_counts = Counter(message_lengths)
-    lengths, counts = zip(*sorted(length_counts.items()))
-    
-    plt.ioff()  # Turn off interactive mode
-    plt.figure(figsize=(10, 5))
-    plt.bar(lengths, counts, color='blue')
-    plt.xlabel("Message Length")
-    plt.ylabel("Frequency")
-    plt.title("Distribution of Message Lengths")
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.show()
-
+    update_chart()
 
 def main():
     logger.info("START consumer...")
@@ -131,6 +128,9 @@ def main():
     else:
         logger.warning("Kafka not available, falling back to file consumption.")
         consume_from_file()
+    
+    plt.ioff()
+    plt.show()
     
 #####################################
 # Conditional Execution
