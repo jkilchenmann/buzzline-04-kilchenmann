@@ -99,6 +99,7 @@ def process_message(message: dict, message_lengths: list):
     logger.info(f"Processing message: {message}")
     message_length = message.get("message_length", 0)
     message_lengths.append(message_length)
+    logger.info(f"Message lengths collected: {message_lengths}")
 
 
 def plot_message_length_distribution(message_lengths):
@@ -112,6 +113,7 @@ def plot_message_length_distribution(message_lengths):
     length_counts = Counter(message_lengths)
     lengths, counts = zip(*sorted(length_counts.items()))
     
+    plt.ioff()  # Turn off interactive mode
     plt.figure(figsize=(10, 5))
     plt.bar(lengths, counts, color='blue')
     plt.xlabel("Message Length")
@@ -119,8 +121,7 @@ def plot_message_length_distribution(message_lengths):
     plt.title("Distribution of Message Lengths")
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.show(block=True)
-    time.sleep(5)  # Keep the plot open for a few seconds
+    plt.show()
 
 
 def main():
