@@ -155,7 +155,7 @@ For each one, you will need to:
 ## Task 8. Generate a Consumer to Count Message Lengths
 
 This consumer will create a bar chart to show the frequency of message lengths.
-I am focusing on thsi aspect, because it is the most numbers oriented tasks from the available data.
+I am focusing on this aspect, because it is the most numbers oriented tasks from the available data.
 
 ### Producer Terminal
 
