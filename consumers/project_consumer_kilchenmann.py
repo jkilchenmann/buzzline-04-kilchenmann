@@ -117,7 +117,10 @@ def plot_message_length_distribution(message_lengths):
     plt.xlabel("Message Length")
     plt.ylabel("Frequency")
     plt.title("Distribution of Message Lengths")
-    plt.show()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show(block=True)
+    time.sleep(5)  # Keep the plot open for a few seconds
 
 
 def main():
