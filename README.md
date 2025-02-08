@@ -152,6 +152,51 @@ For each one, you will need to:
    - Look in the producers folder for csv_producer_case.
    - Look in the consumers folder for csv_consumer_case.
 
+## Task 8. Generate a Consumer to Count Message Lengths
+
+This consumer will create a bar chart to show the frequency of message lengths.
+I am focusing on thsi aspect, because it is the most numbers oriented tasks from the available data.
+
+### Producer Terminal
+
+Start the producer to generate the messages. 
+
+In VS Code, open a NEW terminal.
+Use the commands below to activate .venv, and start the producer. 
+
+Windows:
+
+```shell
+.venv\Scripts\activate
+py -m producers.project_producer_case
+```
+
+Mac/Linux:
+```zsh
+source .venv/bin/activate
+python3 -m producers.project_producer_case
+```
+
+### Consumer Terminal
+
+Start the associated consumer that will process and visualize the messages. 
+
+In VS Code, open a NEW terminal in your root project folder. 
+Use the commands below to activate .venv, and start the consumer. 
+
+Windows:
+```shell
+.venv\Scripts\activate
+py -m consumers.project_consumer_kilchenmann
+```
+
+Mac/Linux:
+```zsh
+source .venv/bin/activate
+python3 -m consumers.project_consumer_kilchenmann
+```
+
+
 ### Review the Application Code
 
 Review the code for both the producer and the consumer. 
